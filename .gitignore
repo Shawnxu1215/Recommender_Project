@@ -1,8 +1,15 @@
-# Datasets and intermediate files: too large for GitHub, rebuilt by the scripts (see README)
-data/
+# Datasets: raw files and embeddings are too large for GitHub (see README).
+# Kept: the files needed to run recommend.py and tiger.py --test without retraining
+data/*
+!data/split.npz
+!data/semantic_ids.npy
+!data/Electronics_1M.csv
+!data/item_catalog.csv
 
-# Trained weights
-models/
+# Trained weights: keep the best NCF and TIGER models
+models/*
+!models/ncf_mlp_best.pt
+!models/tiger_best.pt
 
 # Working documents (only the proposal PDF is shared)
 docs/*.docx

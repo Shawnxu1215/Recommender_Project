@@ -1,0 +1,5 @@
+# Store data and weights byte for byte (no line-ending conversion)
+*.npz binary
+*.npy binary
+*.pt binary
+*.csv -text

@@ -53,8 +53,8 @@ config.json       all settings used in the reported runs
 results.json      all metrics (per epoch, validation and test)
 logs/             training and check logs
 docs/             project proposal
-data/             datasets and intermediate files (not in git, see below)
-models/           trained weights (not in git, see below)
+data/             split, semantic IDs, 1M-interaction subset, item catalog
+models/           trained NCF and TIGER weights
 ```
 
 ## Setup
@@ -64,17 +64,20 @@ Python 3.11 with a CUDA GPU. We used an RTX 3060 12 GB locally and a Colab T4 fo
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cu126
 pip install -r requirements.txt
-mkdir data models
 ```
 
-**Data** is not stored in the repository because the files are too large. Download two files from [Amazon Reviews 2023](https://amazon-reviews-2023.github.io/main.html) into `data/`:
+**Included data and weights (about 210 MB).** The repository includes everything needed to run the [Top-N demo](#top-n-demo) and `python tiger.py --test` without retraining:
+- `data/split.npz`, `data/semantic_ids.npy`, `data/Electronics_1M.csv` and `data/item_catalog.csv`;
+- `models/ncf_mlp_best.pt` and `models/tiger_best.pt`.
 
-- `Electronics.csv`: the ratings-only file, with columns user_id, parent_asin, rating, timestamp.
-- `meta_Electronics.jsonl.gz`: the item metadata.
+**Raw data (only to rebuild from scratch).** These files are too large for GitHub. Download them from [Amazon Reviews 2023](https://amazon-reviews-2023.github.io/main.html) into `data/`:
+
+- `Electronics.csv`: the ratings-only file, with columns user_id, parent_asin, rating, timestamp. `cleaning.py` needs it only if `data/Electronics_1M.csv` is missing.
+- `meta_Electronics.jsonl.gz`: the item metadata, needed by `item_text.py`.
 
 ## Reproduce
 
-Run the scripts from the repository root, in this order. `cleaning.py` and `item_text.py` reuse their output files if they already exist. `ncf_mlp.py` and `rqvae.py` retrain and overwrite theirs, and `tiger.py` resumes from its last checkpoint.
+To retrain, run the scripts from the repository root, in this order. `cleaning.py` and `item_text.py` reuse their output files if they already exist. `ncf_mlp.py` and `rqvae.py` retrain and overwrite theirs, and `tiger.py` resumes from its last checkpoint.
 
 ```bash
 python cleaning.py        # -> data/Electronics_1M.csv, data/split.npz
@@ -97,7 +100,7 @@ python recommend.py AHQ4LW3VLOY44LFZJJNRINUW7DYA --n 5
 python recommend.py --n 10 --model tiger    # random user, TIGER only
 ```
 
-The first run builds `data/item_catalog.csv` from the metadata, which takes a minute or two. Example output (titles shortened):
+Example output (titles shortened):
 
 ```
 User: AHQ4LW3VLOY44LFZJJNRINUW7DYA (11 purchases)

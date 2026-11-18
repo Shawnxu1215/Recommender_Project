@@ -1,0 +1,110 @@
+{
+  "_note": "Results of the reported runs. Settings are in config.json. Metrics use the sampled protocol (1 target + 99 negatives); val evaluates 73,594 users, test 74,087 users.",
+
+  "summary": {
+    "columns": ["val_hr@10", "val_ndcg@10", "test_hr@10", "test_ndcg@10"],
+    "popularity": [0.5290, 0.3320, 0.5133, 0.3123],
+    "ncf_mlp": [0.5674, 0.3585, 0.5279, 0.3236],
+    "tiger": [0.6040, 0.4067, 0.5939, 0.3881]
+  },
+
+  "test_improvement": {
+    "ncf_vs_popularity": {"hr@10": "+0.0146 (+2.8%)", "ndcg@10": "+0.0113 (+3.6%)"},
+    "tiger_vs_ncf": {"hr@10": "+0.0660 (+12.5%)", "ndcg@10": "+0.0645 (+19.9%)"},
+    "tiger_vs_popularity": {"hr@10": "+0.0806 (+15.7%)", "ndcg@10": "+0.0758 (+24.3%)"}
+  },
+
+  "derived_metrics": {
+    "_note": "One relevant item per user, so Recall@10 = HR@10 and F1@10 = HR@10 * 2(0.1 * 1)/(0.1 + 1) = HR@10 * 0.1818",
+    "columns": ["val_recall@10", "val_f1@10", "test_recall@10", "test_f1@10"],
+    "popularity": [0.5290, 0.0962, 0.5133, 0.0933],
+    "ncf_mlp": [0.5674, 0.1032, 0.5279, 0.0960],
+    "tiger": [0.6040, 0.1098, 0.5939, 0.1080]
+  },
+
+  "popularity": {
+    "trained": false,
+    "score": "train interaction count"
+  },
+
+  "ncf_mlp": {
+    "hardware": "local RTX 3060",
+    "train_rows_per_epoch": 4189300,
+    "train_rows_note": "837,860 positives + 4 resampled negatives each",
+    "steps_per_epoch": 2046,
+    "epochs_run": 7,
+    "best_epoch": 4,
+    "stop_reason": "early stopping: val NDCG@10 did not improve for 3 epochs after epoch 4",
+    "checkpoint": "models/ncf_mlp_best.pt",
+    "epochs": {
+      "columns": ["epoch", "train_loss", "val_hr@10", "val_ndcg@10"],
+      "rows": [
+        [1, 0.4372, 0.5146, 0.3192],
+        [2, 0.3989, 0.5394, 0.3367],
+        [3, 0.3744, 0.5627, 0.3549],
+        [4, 0.3550, 0.5674, 0.3585],
+        [5, 0.3392, 0.5630, 0.3564],
+        [6, 0.3226, 0.5487, 0.3498],
+        [7, 0.3043, 0.5388, 0.3431]
+      ]
+    },
+    "test": {"hr@10": 0.5279, "ndcg@10": 0.3236, "model": "epoch 4, trained on train only"}
+  },
+
+  "tiger": {
+    "hardware": "training on Colab Tesla T4 (fp16), test on local RTX 3060 (fp32)",
+    "train_samples": 756798,
+    "steps_per_epoch": 2957,
+    "total_steps": 65054,
+    "epochs_run": 22,
+    "best_epoch": 22,
+    "stop_reason": "Colab compute units ran out; val NDCG@10 was still rising and early stopping had not triggered",
+    "time_per_epoch_seconds": {"train": 362, "val_eval": 411},
+    "total_time_hours": 4.7,
+    "checkpoint": "models/tiger_best.pt",
+    "log": "logs/tiger.log",
+    "epochs": {
+      "columns": ["epoch", "train_loss", "val_hr@10", "val_ndcg@10"],
+      "rows": [
+        [1, 4.5338, 0.3960, 0.2458],
+        [2, 3.8251, 0.4539, 0.2950],
+        [3, 3.6944, 0.4934, 0.3226],
+        [4, 3.6149, 0.5156, 0.3391],
+        [5, 3.5578, 0.5309, 0.3507],
+        [6, 3.5162, 0.5415, 0.3591],
+        [7, 3.4810, 0.5512, 0.3653],
+        [8, 3.4529, 0.5605, 0.3722],
+        [9, 3.4287, 0.5657, 0.3775],
+        [10, 3.4077, 0.5742, 0.3828],
+        [11, 3.3888, 0.5758, 0.3848],
+        [12, 3.3709, 0.5794, 0.3880],
+        [13, 3.3554, 0.5836, 0.3910],
+        [14, 3.3413, 0.5877, 0.3950],
+        [15, 3.3293, 0.5907, 0.3964],
+        [16, 3.3172, 0.5931, 0.3986],
+        [17, 3.3069, 0.5956, 0.3997],
+        [18, 3.2970, 0.5981, 0.4022],
+        [19, 3.2878, 0.5985, 0.4039],
+        [20, 3.2797, 0.6007, 0.4049],
+        [21, 3.2720, 0.6029, 0.4066],
+        [22, 3.2640, 0.6040, 0.4067]
+      ]
+    },
+    "test": {"hr@10": 0.5939, "ndcg@10": 0.3881, "model": "epoch 22, test history = train + val"},
+    "top_n_inference": {
+      "script": "recommend.py",
+      "method": "constrained beam search over valid semantic IDs",
+      "beam_size": 200,
+      "check": "top-10 identical to exact scoring of all 209,379 items for 20/20 users (beam 50: 14/20)",
+      "time_per_user_seconds": 0.22
+    }
+  },
+
+  "caveats": [
+    "Sampled evaluation (1 + 99 uniform negatives) rewards popular items; the popularity baseline alone reaches 0.51 test HR@10.",
+    "Users whose target item never appears in train are excluded (val 9.21%, test 8.60%).",
+    "TIGER sees the val interaction as input history at test time; NCF's test model was trained on train only.",
+    "TIGER training stopped at epoch 22 for compute reasons, not by early stopping.",
+    "27% of items share their first three semantic-ID codes; the 4th code only separates them."
+  ]
+}

@@ -1,0 +1,25 @@
+Device: cuda
+Item embedding shape: (209379, 768)
+Epoch   1 | recon 0.2161 | quant 0.0007 | codes used [14, 1, 9] | unique IDs 33 (0.0%) | reset 13
+Epoch  25 | recon 0.0812 | quant 0.0415 | codes used [256, 256, 256] | unique IDs 179109 (85.5%) | reset 0
+Epoch  50 | recon 0.0765 | quant 0.0565 | codes used [256, 256, 256] | unique IDs 177872 (85.0%) | reset 0
+Epoch  75 | recon 0.0747 | quant 0.0655 | codes used [256, 256, 256] | unique IDs 177164 (84.6%) | reset 0
+Epoch 100 | recon 0.0738 | quant 0.0710 | codes used [256, 256, 256] | unique IDs 176648 (84.4%) | reset 0
+Epoch 125 | recon 0.0731 | quant 0.0751 | codes used [256, 256, 256] | unique IDs 175370 (83.8%) | reset 0
+Epoch 150 | recon 0.0726 | quant 0.0781 | codes used [256, 256, 256] | unique IDs 174882 (83.5%) | reset 0
+Epoch 175 | recon 0.0722 | quant 0.0801 | codes used [256, 256, 256] | unique IDs 175123 (83.6%) | reset 0
+Epoch 200 | recon 0.0719 | quant 0.0824 | codes used [256, 256, 256] | unique IDs 174467 (83.3%) | reset 0
+Epoch 225 | recon 0.0717 | quant 0.0839 | codes used [256, 256, 256] | unique IDs 174511 (83.3%) | reset 0
+Epoch 250 | recon 0.0714 | quant 0.0853 | codes used [256, 256, 256] | unique IDs 174043 (83.1%) | reset 0
+Epoch 275 | recon 0.0713 | quant 0.0867 | codes used [256, 256, 256] | unique IDs 173929 (83.1%) | reset 0
+Epoch 300 | recon 0.0711 | quant 0.0875 | codes used [256, 256, 256] | unique IDs 174040 (83.1%) | reset 0
+Distinct (c1, c2, c3): 174040
+Items sharing their code with another item: 56513 (27.0%)
+Largest group of colliding items: 54 items
+Codes used per level: [256, 256, 256]
+Semantic ID shape: (209379, 4)
+[[176  90  97   0]
+ [155 214 206   0]
+ [243  34 185   0]
+ [215 245 118   0]
+ [211  45  21   0]]

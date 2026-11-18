@@ -1,0 +1,29 @@
+Device: cuda | training precision: torch.float16 | vocab size: 2824 | level-4 codes: 54
+Training samples: 756798 | val users: 73594 | test users: 74087 | input length: 81
+Parameters: 4.82M
+Epoch  1 | loss 4.5338 | Val HR@10 0.3960 | Val NDCG@10 0.2458 | train 362s, eval 409s
+Epoch  2 | loss 3.8251 | Val HR@10 0.4539 | Val NDCG@10 0.2950 | train 365s, eval 410s
+Epoch  3 | loss 3.6944 | Val HR@10 0.4934 | Val NDCG@10 0.3226 | train 363s, eval 410s
+Epoch  4 | loss 3.6149 | Val HR@10 0.5156 | Val NDCG@10 0.3391 | train 364s, eval 412s
+Epoch  5 | loss 3.5578 | Val HR@10 0.5309 | Val NDCG@10 0.3507 | train 363s, eval 410s
+Epoch  6 | loss 3.5162 | Val HR@10 0.5415 | Val NDCG@10 0.3591 | train 363s, eval 410s
+Epoch  7 | loss 3.4810 | Val HR@10 0.5512 | Val NDCG@10 0.3653 | train 362s, eval 411s
+Epoch  8 | loss 3.4529 | Val HR@10 0.5605 | Val NDCG@10 0.3722 | train 361s, eval 410s
+Epoch  9 | loss 3.4287 | Val HR@10 0.5657 | Val NDCG@10 0.3775 | train 361s, eval 411s
+Epoch 10 | loss 3.4077 | Val HR@10 0.5742 | Val NDCG@10 0.3828 | train 362s, eval 412s
+Epoch 11 | loss 3.3888 | Val HR@10 0.5758 | Val NDCG@10 0.3848 | train 361s, eval 413s
+Epoch 12 | loss 3.3709 | Val HR@10 0.5794 | Val NDCG@10 0.3880 | train 361s, eval 412s
+Epoch 13 | loss 3.3554 | Val HR@10 0.5836 | Val NDCG@10 0.3910 | train 362s, eval 412s
+Epoch 14 | loss 3.3413 | Val HR@10 0.5877 | Val NDCG@10 0.3950 | train 363s, eval 411s
+Epoch 15 | loss 3.3293 | Val HR@10 0.5907 | Val NDCG@10 0.3964 | train 362s, eval 413s
+Epoch 16 | loss 3.3172 | Val HR@10 0.5931 | Val NDCG@10 0.3986 | train 363s, eval 411s
+Epoch 17 | loss 3.3069 | Val HR@10 0.5956 | Val NDCG@10 0.3997 | train 362s, eval 413s
+Epoch 18 | loss 3.2970 | Val HR@10 0.5981 | Val NDCG@10 0.4022 | train 362s, eval 411s
+Epoch 19 | loss 3.2878 | Val HR@10 0.5985 | Val NDCG@10 0.4039 | train 362s, eval 411s
+Epoch 20 | loss 3.2797 | Val HR@10 0.6007 | Val NDCG@10 0.4049 | train 362s, eval 412s
+Epoch 21 | loss 3.2720 | Val HR@10 0.6029 | Val NDCG@10 0.4066 | train 362s, eval 411s
+Epoch 22 | loss 3.2640 | Val HR@10 0.6040 | Val NDCG@10 0.4067 | train 362s, eval 411s
+Device: cuda | training precision: torch.bfloat16 | vocab size: 2824 | level-4 codes: 54
+Training samples: 756798 | val users: 73594 | test users: 74087 | input length: 81
+Parameters: 4.82M
+Test HR@10 0.5939 | Test NDCG@10 0.3881

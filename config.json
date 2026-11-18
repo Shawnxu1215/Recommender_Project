@@ -1,0 +1,186 @@
+{
+  "_note": "Settings used for the reported results. Record only: the scripts still define these values in code, so update this file if you change them there.",
+
+  "environment": {
+    "python": "3.11.9",
+    "torch": "2.14.1+cu126 (local)",
+    "transformers": "5.23.0",
+    "sentence_transformers": "6.3.0",
+    "local_gpu": "RTX 3060 12GB",
+    "cloud_gpu": "Colab Tesla T4 (TIGER training only)"
+  },
+
+  "data": {
+    "source": "Amazon Reviews 2023, Electronics (ratings + item metadata)",
+    "raw_file": "data/Electronics.csv",
+    "subset_file": "data/Electronics_1M.csv",
+    "subset_rule": "sort users by most recent interaction, keep each selected user's full history, stop before total interactions exceed the cap",
+    "max_interactions": 1000000,
+    "num_interactions": 999984,
+    "num_users": 81062,
+    "num_items": 209379,
+    "script": "cleaning.py"
+  },
+
+  "split": {
+    "method": "per-user leave-one-out by timestamp",
+    "min_interactions_per_user": 3,
+    "val": "each user's second-to-last interaction",
+    "test": "each user's last interaction",
+    "num_train": 837860,
+    "num_val": 81062,
+    "num_test": 81062,
+    "output": "data/split.npz"
+  },
+
+  "evaluation": {
+    "protocol": "sampled ranking: 1 target + 99 negatives per user, same candidates for every model",
+    "num_negatives": 99,
+    "negative_pool": "items that appear in train",
+    "val_negatives_exclude": "user's train items and the target",
+    "test_negatives_exclude": "user's train and val items and the target",
+    "val_seed": 1,
+    "test_seed": 2,
+    "cold_target_filter": "users whose target item never appears in train are dropped",
+    "val_users_evaluated": 73594,
+    "test_users_evaluated": 74087,
+    "rank": "number of negatives with a strictly higher score than the target (0-based)",
+    "metrics": ["HR@10", "NDCG@10"],
+    "ndcg": "1 / log2(rank + 2) if rank < 10 else 0",
+    "model_selection": "epoch with the best val NDCG@10"
+  },
+
+  "popularity_baseline": {
+    "score": "number of interactions of the item in train"
+  },
+
+  "ncf_mlp": {
+    "script": "ncf_mlp.py",
+    "checkpoint": "models/ncf_mlp_best.pt",
+    "seed": 42,
+    "embedding_dim": 32,
+    "embedding_init": "normal, std 0.01",
+    "mlp_layers": [64, 32, 16, 8, 1],
+    "activation": "ReLU",
+    "dropout": 0.0,
+    "loss": "BCEWithLogitsLoss",
+    "negatives_per_positive": 4,
+    "negative_sampling": "resampled every epoch, uniform over train items the user has not interacted with",
+    "optimizer": "Adam",
+    "lr": 1e-3,
+    "weight_decay": 1e-6,
+    "weight_decay_on": "embeddings only",
+    "batch_size": 2048,
+    "max_epochs": 20,
+    "early_stopping_patience": 3,
+    "epochs_run": 7,
+    "best_epoch": 4,
+    "test_model_trained_on": "train only (not retrained with val)"
+  },
+
+  "item_text_embedding": {
+    "script": "item_text.py",
+    "meta_file": "data/meta_Electronics_1M.jsonl",
+    "output": "data/item_emb.npy",
+    "model": "sentence-transformers/sentence-t5-base",
+    "embedding_dim": 768,
+    "max_seq_length": 256,
+    "batch_size": 256,
+    "stored_dtype": "float16",
+    "text_template": "Title. Brand. Category. Price. Features (fields joined with '. ', missing fields skipped)",
+    "category_rule": "drop the top-level 'Electronics', fall back to main_category if empty",
+    "features_max_chars": 300
+  },
+
+  "rqvae": {
+    "script": "rqvae.py",
+    "checkpoint": "models/rqvae.pt",
+    "output": "data/semantic_ids.npy",
+    "seed": 42,
+    "encoder_layers": [768, 512, 256, 128, 32],
+    "decoder_layers": [32, 128, 256, 512, 768],
+    "activation": "ReLU",
+    "latent_dim": 32,
+    "num_levels": 3,
+    "codebook_size": 256,
+    "codebook_init": "k-means per level, 20 iterations",
+    "beta": 0.25,
+    "loss": "reconstruction squared error + codebook loss + beta * commitment loss",
+    "optimizer": "Adam",
+    "lr": 1e-3,
+    "batch_size": 1024,
+    "epochs": 300,
+    "dead_code_reset": "every epoch except the last 50, unused codes replaced by residuals of random items (8192 sampled)",
+    "collision_handling": "4th code c4 = index within the group of items sharing (c1, c2, c3)",
+    "semantic_id_length": 4,
+    "c4_vocab_size": 54
+  },
+
+  "tiger": {
+    "script": "tiger.py",
+    "colab_notebook": "colab_run.ipynb",
+    "checkpoint": "models/tiger_best.pt",
+    "resume_checkpoint": "models/tiger_last.pt",
+    "seed": 42,
+    "shuffle_seed": "42 + epoch",
+
+    "input": {
+      "max_history": 20,
+      "num_user_tokens": 2000,
+      "user_token": "user_idx % 2000",
+      "input_length": 81,
+      "layout": "[user token] + 4 tokens per history item, oldest to newest, padded at the end",
+      "train_samples": "sliding window: every train interaction except each user's first is a target",
+      "num_train_samples": 756798,
+      "val_history": "train",
+      "test_history": "train + val"
+    },
+
+    "vocab": {
+      "size": 2824,
+      "pad_id": 0,
+      "decoder_start_id": 0,
+      "eos_id": 1,
+      "eos_used": false,
+      "per_level_offsets": true
+    },
+
+    "model": {
+      "architecture": "T5 encoder-decoder, trained from scratch",
+      "encoder_layers": 4,
+      "decoder_layers": 4,
+      "d_model": 128,
+      "num_heads": 6,
+      "d_kv": 64,
+      "d_ff": 1024,
+      "feed_forward": "ReLU",
+      "dropout": 0.1,
+      "attention": "eager",
+      "num_params": "4.82M"
+    },
+
+    "training": {
+      "loss": "cross-entropy over the target item's 4 tokens (teacher forcing)",
+      "optimizer": "AdamW",
+      "lr": 1e-3,
+      "weight_decay": 0.01,
+      "warmup_steps": 1000,
+      "lr_schedule": "linear warmup, then lr * sqrt(warmup_steps / step)",
+      "batch_size": 256,
+      "steps_per_epoch": 2957,
+      "precision": "fp16 + GradScaler on T4 (bf16 on GPUs with compute capability >= 8)",
+      "max_epochs": 30,
+      "early_stopping_patience": 3,
+      "epochs_run": 22,
+      "stop_reason": "Colab compute units ran out; early stopping had not triggered",
+      "best_epoch": 22
+    },
+
+    "evaluation": {
+      "score": "sum of log-probabilities of the candidate's 4 tokens",
+      "precision": "fp32",
+      "eval_user_batch": 64,
+      "test_run_on": "local RTX 3060 (python tiger.py --test)"
+    }
+  }
+}

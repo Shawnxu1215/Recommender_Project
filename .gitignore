@@ -1,0 +1,18 @@
+# Datasets and intermediate files: too large for GitHub, rebuilt by the scripts (see README)
+data/
+
+# Trained weights
+models/
+
+# Working documents (only the proposal PDF is shared)
+docs/*.docx
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor and OS files
+.vscode/
+.ipynb_checkpoints/
+Thumbs.db
+desktop.ini

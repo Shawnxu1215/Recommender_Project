@@ -1,0 +1,6 @@
+import ncf_mlp: 0.0s
+beam   50: top-10 overlap 9.3/10 on average, identical lists 14/20, 0.09s per user
+beam  100: top-10 overlap 9.9/10 on average, identical lists 19/20, 0.14s per user
+beam  200: top-10 overlap 10.0/10 on average, identical lists 20/20, 0.22s per user
+beam  500: top-10 overlap 10.0/10 on average, identical lists 20/20, 0.48s per user
+beam 1000: top-10 overlap 10.0/10 on average, identical lists 20/20, 0.86s per user

@@ -1,0 +1,6 @@
+# Versions used for the reported runs (Python 3.11). Install torch first, matching your CUDA version:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu126
+numpy==2.4.6
+pandas==3.1.0
+transformers==5.23.0
+sentence-transformers==6.3.0

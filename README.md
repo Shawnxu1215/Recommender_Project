@@ -129,8 +129,3 @@ NCF tends to recommend popular items. TIGER follows the user's recent purchases 
 - One category (Electronics) and one configuration per model; no hyperparameter search.
 - TIGER stopped at epoch 22, when Colab compute ran out, while validation NDCG was still improving.
 - NCF was selected on validation but not retrained on train + validation before testing.
-
-## Next steps
-
-- A conversational agent that turns requests like "wireless earbuds under $50 for running" into recommendations.
-- Each recommended item comes with a short reason drawn from product attributes and reviews.
